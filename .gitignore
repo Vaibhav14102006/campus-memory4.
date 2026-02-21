@@ -1,0 +1,61 @@
+# Firebase Credentials
+firebase-credentials.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual Environment
+.venv/
+.venv-1/
+.venv-2/
+.venv-3/
+venv/
+env/
+
+# Node modules (NEVER commit these!)
+**/node_modules/
+**/.next/
+**/out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Training checkpoints only (keep final trained models!)
+models/*/checkpoint-*/
+models/*_temp/
+*.pt
+recommendation_model.pkl
+scaler.pkl
+models/**/rng_state.pth
+models/**/scaler.pt
+models/**/training_args.bin
+models/**/trainer_state.json
+
+# Large PKL files
+satisfaction_model.pkl
+model_metadata.pkl
+label_encoders.pkl

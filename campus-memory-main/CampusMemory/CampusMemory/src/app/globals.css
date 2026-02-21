@@ -1,0 +1,557 @@
+@import "tailwindcss";
+
+@theme {
+  /* 🤖 ROBOTIC THEME - Cyber Tech Colors */
+  --color-primary: #00E5FF;
+  --color-primary-light: #69F0FF;
+  --color-primary-dark: #00B8D4;
+  --color-cyber-blue: #00E5FF;
+  --color-neon-green: #00FF41;
+  --color-electric-purple: #B026FF;
+  --color-tech-orange: #FF6B00;
+  --color-metallic-silver: #C0C0C0;
+  --color-dark-metal: #1A1A2E;
+  --color-circuit-green: #00FF88;
+  --color-plasma-pink: #FF0080;
+  --color-hologram-blue: #00FFE0;
+
+  --font-heading: "Orbitron", "Rajdhani", "Poppins", sans-serif;
+  --font-body: "Rajdhani", "Inter", sans-serif;
+}
+
+@layer base {
+  :root {
+    /* 🤖 Robotic Light Theme */
+    --background: 210 20% 98%;
+    --foreground: 210 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 10% 10%;
+    --primary-hsl: 187 100% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 187 50% 90%;
+    --secondary-foreground: 187 100% 20%;
+    --muted: 210 20% 95%;
+    --muted-foreground: 210 10% 40%;
+    --accent: 141 100% 50%;
+    --accent-foreground: 0 0% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 187 30% 85%;
+    --input: 187 30% 85%;
+    --ring: 187 100% 50%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* 🤖 Robotic Dark Theme (Cyber Dark) */
+    --background: 240 20% 8%;
+    --foreground: 187 100% 90%;
+    --card: 240 20% 12%;
+    --card-foreground: 187 100% 90%;
+    --popover: 240 20% 12%;
+    --popover-foreground: 210 40% 98%;
+    --primary-hsl: 224 73% 50%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224 73% 50%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-gray-200, #00E5FF33);
+  }
+  body {
+    background: linear-gradient(135deg, #0a0f1e 0%, #1a1a2e 50%, #16213e 100%);
+    color: #00E5FF;
+    font-family: var(--font-body);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  /* 🤖 Cyber Grid Background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+  }
+}
+
+/* 🤖 Robotic Cyber Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0f1e;
+  border-left: 1px solid #00E5FF33;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00E5FF, #00B8D4);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #69F0FF, #00E5FF);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.8);
+}
+
+/* Animated gradient background */
+.gradient-animate {
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glow pulse animation */
+.glow-pulse {
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(30, 64, 175, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(30, 64, 175, 0.6), 0 0 60px rgba(245, 158, 11, 0.3); }
+}
+
+/* Floating animation */
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Particle effect */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Glass morphism */
+.glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Text gradient */
+.text-gradient {
+  background: linear-gradient(135deg, #1E40AF, #F59E0B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(30, 64, 175, 0.15);
+}
+
+/* Ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Indian pattern border */
+.pattern-border {
+  border-image: repeating-linear-gradient(
+    45deg,
+    #F59E0B 0px,
+    #F59E0B 5px,
+    #1E40AF 5px,
+    #1E40AF 10px
+  ) 5;
+}
+
+/* Wisdom tree animation */
+@keyframes grow-branch {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+.grow-branch {
+  stroke-dasharray: 1000;
+  animation: grow-branch 3s ease forwards;
+}
+
+/* Counter animation */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.counter-animate {
+  animation: count-up 0.8s ease-out forwards;
+}
+/* New Enhanced Animations */
+
+/* 3D Card Flip */
+@keyframes card-flip {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+.card-flip-animation {
+  animation: card-flip 2s ease-in-out;
+  transform-style: preserve-3d;
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Magnetic hover effect */
+.magnetic-hover {
+  transition: transform 0.2s ease-out;
+}
+
+/* Neon glow */
+@keyframes neon-glow {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(212, 175, 55, 0.8),
+      0 0 20px rgba(212, 175, 55, 0.6),
+      0 0 30px rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    text-shadow: 
+      0 0 20px rgba(212, 175, 55, 1),
+      0 0 30px rgba(212, 175, 55, 0.8),
+      0 0 40px rgba(212, 175, 55, 0.6);
+  }
+}
+
+.neon-text {
+  animation: neon-glow 2s ease-in-out infinite;
+}
+
+/* Pulse ring */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Bounce in */
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.bounce-in {
+  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Slide up fade */
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up-fade {
+  animation: slide-up-fade 0.8s ease-out forwards;
+}
+
+/* Rotate scale */
+@keyframes rotate-scale {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.rotate-scale {
+  animation: rotate-scale 3s ease-in-out infinite;
+}
+
+/* Morphing blob */
+@keyframes morph-blob {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+  50% {
+    border-radius: 50% 50% 30% 70% / 30% 70% 70% 30%;
+  }
+  75% {
+    border-radius: 70% 30% 50% 50% / 40% 50% 50% 60%;
+  }
+}
+
+.morph-blob {
+  animation: morph-blob 10s ease-in-out infinite;
+}
+
+/* Typewriter effect */
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter 3s steps(40) forwards;
+}
+
+/* Glitch effect */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.glitch-effect:hover {
+  animation: glitch 0.3s infinite;
+}
+
+/* 🤖 Robotic Cyber Effects */
+@keyframes cyber-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0, 229, 255, 0.5), 0 0 10px rgba(0, 229, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.8), 0 0 30px rgba(0, 229, 255, 0.5);
+  }
+}
+
+@keyframes circuit-glow {
+  0%, 100% {
+    text-shadow: 0 0 5px #00E5FF, 0 0 10px #00E5FF, 0 0 15px #00E5FF;
+  }
+  50% {
+    text-shadow: 0 0 10px #00E5FF, 0 0 20px #00E5FF, 0 0 30px #00E5FF, 0 0 40px #00E5FF;
+  }
+}
+
+@keyframes matrix-rain {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* Robotic Card Styles */
+.robot-card {
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 229, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.robot-card:hover {
+  border-color: rgba(0, 229, 255, 0.8);
+  box-shadow: 0 8px 30px rgba(0, 229, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Robotic Button Styles */
+.robot-btn {
+  background: linear-gradient(135deg, #00E5FF, #00B8D4);
+  border: 1px solid #00E5FF;
+  color: #0a0f1e;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.robot-btn:hover {
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.8);
+  transform: scale(1.05);
+}
+
+/* Neon Text Effects */
+.neon-text {
+  color: #00E5FF;
+  text-shadow: 0 0 5px #00E5FF, 0 0 10px #00E5FF, 0 0 15px #00E5FF;
+  animation: circuit-glow 2s ease-in-out infinite;
+}
+
+/* Spotlight effect */
+@keyframes spotlight {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.spotlight {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: spotlight 3s ease-in-out infinite;
+}
+
+/* Gradient animation for buttons */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animated gradient text */
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Enhanced pulse */
+@keyframes enhanced-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.enhanced-pulse {
+  animation: enhanced-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
