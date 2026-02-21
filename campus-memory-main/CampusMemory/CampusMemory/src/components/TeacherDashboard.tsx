@@ -44,10 +44,18 @@ export default function TeacherDashboard({ teacherId = 'TEACHER001' }: { teacher
 
   const fetchDashboardData = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/dashboard/teacher/${teacherId}`);
-      const data = await response.json();
-      setDashboardData(data);
-      setEvents(data.events || []);
+      // Fetch all events instead of teacher-specific endpoint
+      const eventsResponse = await fetch(`${API_BASE_URL}/events`);
+      const eventsData = await eventsResponse.json();
+      setEvents(eventsData || []);
+      
+      // Set mock dashboard data
+      setDashboardData({
+        school: 'Your School',
+        totalEvents: eventsData?.length || 0,
+        totalAttendance: 0,
+        odGrantedCount: 0
+      });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }

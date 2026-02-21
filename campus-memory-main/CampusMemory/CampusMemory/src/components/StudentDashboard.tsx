@@ -8,6 +8,16 @@
 import React, { useState, useEffect } from 'react';
 import { Award, Calendar, TrendingUp, CheckCircle } from 'lucide-react';
 
+interface Event {
+  eventId: string;
+  title: string;
+  category: string;
+  date: string;
+  time: string;
+  location: string;
+  school: string;
+}
+
 interface AttendedEvent {
   eventId: string;
   title: string;
@@ -28,20 +38,38 @@ const API_BASE_URL = 'http://localhost:8001';
 
 export default function StudentDashboard({ studentId = 'STU001' }: { studentId?: string }) {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [availableEvents, setAvailableEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDashboardData();
+    fetchData();
   }, [studentId]);
 
-  const fetchDashboardData = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/dashboard/student/${studentId}`);
-      const data = await response.json();
-      setDashboardData(data);
+      // Fetch available events
+      const eventsResponse = await fetch(`${API_BASE_URL}/events`);
+      const eventsData = await eventsResponse.json();
+      setAvailableEvents(eventsData || []);
+      
+      // Try to fetch student attendance data
+      try {
+        const attendanceResponse = await fetch(`${API_BASE_URL}/students/${studentId}/attendance`);
+        const attendanceData = await attendanceResponse.json();
+        setDashboardData(attendanceData);
+      } catch (error) {
+        // If no attendance data, set mock data
+        setDashboardData({
+          studentId,
+          totalEventsAttended: 0,
+          presentCount: 0,
+          odGrantedCount: 0,
+          attendedEvents: []
+        });
+      }
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
@@ -125,12 +153,48 @@ export default function StudentDashboard({ studentId = 'STU001' }: { studentId?:
           </div>
         </div>
 
+        {/* Available Events */}
+        {availableEvents.length > 0 && (
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Available Events</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {availableEvents.map((event) => (
+                <div
+                  key={event.eventId}
+                  className="border border-indigo-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-indigo-400"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="font-semibold text-gray-800 text-lg flex-1">{event.title}</h3>
+                    <span className="text-xs font-semibold text-white bg-indigo-600 px-2 py-1 rounded">
+                      {event.category}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1 text-sm text-gray-600">
+                    <div className="flex items-center gap-2">
+                      <Calendar size={14} className="text-indigo-600" />
+                      <span>{event.date} at {event.time}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-indigo-600">📍</span>
+                      <span className="truncate">{event.location}</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-2">{event.school}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Attendance History */}
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Attendance History</h2>
 
           <div className="space-y-3">
-            {dashboardData.attendedEvents.map((event) => (
+            {dashboardData.attendedEvents && dashboardData.attendedEvents.length > 0 ? (
+              dashboardData.attendedEvents.map((event) => (
               <div
                 key={event.eventId}
                 className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
@@ -163,9 +227,8 @@ export default function StudentDashboard({ studentId = 'STU001' }: { studentId?:
                   </div>
                 </div>
               </div>
-            ))}
-
-            {dashboardData.attendedEvents.length === 0 && (
+            ))
+            ) : (
               <div className="text-center py-12 text-gray-500">
                 <Calendar className="mx-auto mb-4" size={48} />
                 <p>No attendance records yet</p>

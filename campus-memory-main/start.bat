@@ -25,32 +25,20 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [1/6] Checking Python dependencies...
-if not exist ".venv" (
+echo [1/4] Checking Python dependencies...
+if not exist ".venv-3" (
     echo Creating virtual environment...
-    python -m venv .venv
+    python -m venv .venv-3
 )
 
 echo Activating virtual environment...
-call .venv\Scripts\activate.bat
+call .venv-3\Scripts\activate.bat
 
 echo Installing Python packages...
 pip install -r requirements.txt --quiet
 
 echo.
-echo [2/6] Checking ML models...
-if not exist "recommendation_model.pkl" (
-    echo [WARNING] ML models not found. Run train_model.py first.
-    echo Training models now... (this may take 2-3 minutes)
-    python train_model.py
-)
-
-echo.
-echo [3/6] Creating sample events data...
-python event_management.py
-
-echo.
-echo [4/6] Checking Next.js dependencies...
+echo [2/4] Checking Next.js dependencies...
 cd CampusMemory\CampusMemory
 
 if not exist "node_modules" (
@@ -63,34 +51,37 @@ if not exist "node_modules" (
 cd ..\..
 
 echo.
-echo [5/6] Starting Backend Server (API on port 8000)...
-start "Campus Memory Backend" cmd /k "uvicorn backend_server:app --host 0.0.0.0 --port 8000 --reload"
+echo [3/4] Starting Backend Server (API on port 8001)...
+start "Campus Memory Backend" cmd /k "call .venv-3\Scripts\activate.bat && python event_api_server.py"
 
-echo Waiting for backend to start...
-timeout /t 8 /nobreak >nul
+echo Waiting for backend to initialize (AI models loading)...
+timeout /t 10 /nobreak >nul
 
 echo.
-echo [6/6] Starting Frontend Server with API Proxy...
+echo [4/4] Starting Frontend Server...
 start "Campus Memory Frontend" cmd /k "cd CampusMemory\CampusMemory && npm run dev"
 
 echo.
 echo ================================================================================
-echo   Setup Complete!
+echo   Setup Complete! Servers Starting...
 echo ================================================================================
 echo.
-echo   Access Your Application: http://localhost:3000
+echo   WAIT 30-60 SECONDS for backend AI models to load!
 echo.
-echo   Everything runs through port 3000:
-echo   - Frontend UI: Available at http://localhost:3000
-echo   - Backend API: Proxied through http://localhost:3000/api/*
-echo   - Direct Backend: http://localhost:8000 (for development/testing)
-echo   - API Docs: http://localhost:8000/docs
+echo   Access Your Application:
+echo   ^> http://localhost:3000
+echo.
+echo   Backend API (once loaded):
+echo   ^> http://localhost:8001
+echo   ^> http://localhost:8001/docs (API Documentation)
 echo.
 echo   Two new terminal windows have opened:
-echo   - Backend Server (Python FastAPI on port 8000)
-echo   - Frontend Server (Next.js on port 3000 with API proxy)
+echo   1. Backend Server (Python FastAPI on port 8001)
+echo      - Wait for "Uvicorn running on http://0.0.0.0:8001"
+echo   2. Frontend Server (Next.js on port 3000)
+echo      - Ready when you see "Local: http://localhost:3000"
 echo.
-echo   Press Ctrl+C in each window to stop the servers
+echo   Press Ctrl+C in each terminal window to stop the servers
 echo ================================================================================
 echo.
 

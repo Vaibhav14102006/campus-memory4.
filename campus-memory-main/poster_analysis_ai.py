@@ -411,17 +411,27 @@ class PosterAnalysisPipeline:
         # Enhanced Time extraction - multiple formats
         time_patterns = [
             # "Time: 9:00 AM - 6:00 PM" or "At: 9:00 AM"
-            r'(?:Time|At|Timing):\s*(\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?(?:\s*-\s*\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?)?)',
+            r'(?:Time|At|Timing):\s*(\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?(?:\s*[-to]+\s*\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)?)?)',
             # "9:00 AM - 6:00 PM" standalone
-            r'(\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)\s*-\s*\d{1,2}:\d{2}\s*(?:AM|PM|am|pm))',
-            # "09:00 - 18:00" 24-hour format
-            r'(\d{2}:\d{2}\s*-\s*\d{2}:\d{2})',
+            r'(\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)\s*[-to]+\s*\d{1,2}:\d{2}\s*(?:AM|PM|am|pm))',
+            # "09:00 - 18:00" or "9:00-18:00" 24-hour format  
+            r'(\d{1,2}:\d{2}\s*[-to]+\s*\d{1,2}:\d{2})',
+            # "10 AM - 5 PM" without minutes
+            r'(\d{1,2}\s*(?:AM|PM|am|pm)\s*[-to]+\s*\d{1,2}\s*(?:AM|PM|am|pm))',
+            # Single time "10:00 AM" or "10 AM"
+            r'(?:^|\s)(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm))(?=\s|$)',
         ]
         
         for pattern in time_patterns:
             match = re.search(pattern, text, re.IGNORECASE)
             if match:
-                entities["time"] = match.group(1).strip()
+                time_str = match.group(1).strip()
+                # Normalize AM/PM to uppercase
+                time_str = re.sub(r'am\b', 'AM', time_str, flags=re.IGNORECASE)
+                time_str = re.sub(r'pm\b', 'PM', time_str, flags=re.IGNORECASE)
+                # Normalize separators
+                time_str = re.sub(r'\s*to\s*', ' - ', time_str, flags=re.IGNORECASE)
+                entities["time"] = time_str
                 break
         
         # Enhanced Location extraction
@@ -443,14 +453,20 @@ class PosterAnalysisPipeline:
         
         # Enhanced Organizer extraction
         org_patterns = [
-            r'(?:Organized|Organised|Organized by|Organised by):\s*([A-Za-z0-9\s,&\-()]+?)(?:\n|Contact|Date|$)',
-            r'(?:By|Presented by):\s*([A-Za-z0-9\s,&\-()]+?)(?:\n|Contact|Date|$)',
+            r'(?:Organized|Organised)[^\n]*?(?:by|BY):\s*([A-Za-z0-9\s,&\-()]+?)(?:\n|Sponsored|Contact|Date|Time|$)',
+            r'(?:Organized|Organised)[^\n]*?(?:by|BY)\s+([A-Za-z0-9\s,&\-()]+?)(?:\n|Sponsored|Contact|Date|Time|$)',
+            r'(?:By|Presented by|Conducted by)[:\s]+([A-Za-z0-9\s,&\-()]+?)(?:\n|Contact|Date|Time|$)',
+            r'(?:Organizer|Organiser):\s*([A-Za-z0-9\s,&\-()]+?)(?:\n|Contact|Date|$)',
         ]
         
         for pattern in org_patterns:
             match = re.search(pattern, text, re.IGNORECASE)
             if match:
-                entities["organizer"] = match.group(1).strip()
+                organizer = match.group(1).strip()
+                # Cleanup - remove trailing words that aren't part of the name
+                organizer = re.sub(r'\s+(in|with|and|&)\s+[Cc]ollaboration.*$', '', organizer)
+                organizer = re.sub(r'\s+[Ss]ponsored.*$', '', organizer)
+                entities["organizer"] = organizer
                 break
         
         # Enhanced Deadline/Registration extraction
@@ -645,60 +661,166 @@ class PosterAnalysisPipeline:
         if not lines:
             return "Untitled Event"
         
-        # Title is usually:
-        # 1. First prominent line (not a label)
-        # 2. Longest line in first few lines
-        # 3. Contains event-related keywords
+        # Title extraction strategies:
+        # 1. Look for title-like patterns (Introduction to, Workshop on, etc.)
+        # 2. Find the most prominent text (longest, capitalized)
+        # 3. Avoid common labels and metadata
         
-        # Skip common label words
-        skip_words = ['date', 'time', 'venue', 'location', 'organized', 'contact', 'register']
+        # Skip common label words and metadata
+        skip_patterns = [
+            r'^date:',
+            r'^time:',
+            r'^venue:',
+            r'^location:',
+            r'^organized',
+            r'^contact:',
+            r'^register',
+            r'^speakers?:',
+            r'^faculty',
+            r'^organized by',
+            r'^sponsored by',
+            r'^\d{1,2}[-/]',  # dates at start
+        ]
         
+        # Title patterns to look for
+        title_patterns = [
+            # "Introduction to X" or "Workshop on X"
+            r'((?:Introduction to|Workshop on|Seminar on|Conference on|Symposium on|Training on|Course on)\s+[A-Za-z0-9\s&\-:]+?)(?:\s+Speakers?:|\s+Date:|\s+Time:|\s+Venue:|\s+WHY|$)',
+            # Title Case phrases (3+ words)
+            r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+){2,})',
+            # All caps titles (2+ words, not single letters)
+            r'([A-Z]{2,}(?:\s+[A-Z]{2,})+)',
+        ]
+        
+        # Try pattern-based title extraction first
+        for pattern in title_patterns:
+            match = re.search(pattern, text, re.IGNORECASE if 'Introduction' in pattern else 0)
+            if match:
+                title = match.group(1).strip()
+                # Validate title length
+                if 5 <= len(title) <= 100:
+                    # Remove trailing punctuation
+                    title = re.sub(r'[:\-,]+$', '', title).strip()
+                    if len(title) >= 5:
+                        return title
+        
+        # Fallback: Score each line
         potential_titles = []
-        for i, line in enumerate(lines[:5]):  # Check first 5 lines
-            # Skip lines that are just labels
-            if any(word in line.lower() for word in skip_words):
+        for i, line in enumerate(lines[:10]):  # Check first 10 lines
+            line_lower = line.lower()
+            
+            # Skip lines matching skip patterns
+            if any(re.match(pattern, line_lower) for pattern in skip_patterns):
                 continue
-            # Title should be 5-100 chars
-            if 5 <= len(line) <= 100:
-                # Prefer lines with capital letters or multiple words
-                score = len(line)
-                if line.isupper() or line.istitle():
-                    score += 50
-                potential_titles.append((score, line))
+            
+            # Skip very short or very long lines
+            if len(line) < 5 or len(line) > 100:
+                continue
+            
+            # Score the line
+            score = 0
+            
+            # Prefer earlier lines
+            score += (10 - i) * 10
+            
+            # Prefer longer lines (but not too long)
+            if 20 <= len(line) <= 60:
+                score += 30
+            elif 10 <= len(line) <= 80:
+                score += 20
+            
+            # Prefer title case or all caps
+            if line.isupper():
+                score += 40
+            elif line.istitle():
+                score += 30
+            
+            # Prefer lines with multiple words
+            word_count = len(line.split())
+            if 3 <= word_count <= 8:
+                score += 25
+            elif 2 <= word_count <= 10:
+                score += 15
+            
+            # Bonus for event-related keywords
+            event_keywords = ['workshop', 'seminar', 'conference', 'symposium', 'session', 'training', 'hackathon', 'fest', 'competition']
+            if any(kw in line_lower for kw in event_keywords):
+                score += 20
+            
+            potential_titles.append((score, line))
         
         if potential_titles:
             # Return highest scored title
             potential_titles.sort(reverse=True)
-            return potential_titles[0][1]
+            title = potential_titles[0][1]
+            # Clean up title
+            title = re.sub(r'[:\-,]+$', '', title).strip()
+            return title if len(title) >= 5 else "Untitled Event"
         
-        # Fallback to first line
-        return lines[0] if lines[0] and len(lines[0]) < 100 else "Untitled Event"
+        # Last resort: first reasonably-sized line
+        for line in lines[:3]:
+            if 5 <= len(line) <= 100:
+                return line
+        
+        return "Untitled Event"
     
     def _generate_description(self, text: str, entities: Dict[str, Any]) -> str:
         """Generate a better description from extracted text"""
         # Remove redundant information that's already captured
         cleaned = text
         
-        # Remove date, time, venue patterns as they're in separate fields
+        # Remove patterns that are already in separate fields
         patterns_to_remove = [
             r'(?:Date|On):\s*[^\n]+',
             r'(?:Time|At|Timing):\s*[^\n]+',
-            r'(?:Venue|Location|Place):\s*[^\n]+',
-            r'(?:Register|Registration):\s*[^\n]+',
-            r'(?:Contact):\s*[^\n]+',
+            r'(?:Venue|Location|Place)[:\s]+[^\n]+',
+            r'(?:Register|Registration)[:\s]+[^\n]+',
+            r'(?:Contact|Email|Ph|Phone)[:\s]+[^\n]+',
+            r'(?:Organized|Organised).{0,50}by.{0,50}(?:\n|$)',
+            r'(?:Sponsored|Presented).{0,50}by.{0,50}(?:\n|$)',
+            r'\b(?:VENUE|SPEAKERS?|FACULTY|ORGANIZED|SPONSORED)\b[^\n]*',
         ]
         
         for pattern in patterns_to_remove:
             cleaned = re.sub(pattern, '', cleaned, flags=re.IGNORECASE)
         
-        # Clean up whitespace
-        cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+        # Remove the title if it appears verbatim
+        if entities.get('title'):
+            title = entities['title']
+            cleaned = cleaned.replace(title, '')
         
-        # Take first 300 chars as description
+        # Split into sentences and take informative ones
+        sentences = re.split(r'[.\n]+', cleaned)
+        description_parts = []
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            # Keep sentences that are descriptive (10-150 chars, not just labels)
+            if 10 <= len(sentence) <= 150:
+                # Avoid label-only sentences
+                if not re.match(r'^(?:Date|Time|Venue|Location|Contact|Register|Organized)', sentence, re.IGNORECASE):
+                    description_parts.append(sentence)
+                    if len(' '.join(description_parts)) > 200:
+                        break
+        
+        if description_parts:
+            description = '. '.join(description_parts)
+            # Clean up whitespace
+            description = re.sub(r'\s+', ' ', description).strip()
+            # Add period if missing
+            if description and not description.endswith('.'):
+                description += '.'
+            # Truncate if too long
+            if len(description) > 400:
+                description = description[:397] + "..."
+            return description
+        
+        # Fallback: use first 300 chars of cleaned text
+        cleaned = re.sub(r'\s+', ' ', cleaned).strip()
         if len(cleaned) > 300:
             cleaned = cleaned[:297] + "..."
         
-        return cleaned if cleaned else "No description available"
+        return cleaned if cleaned and len(cleaned) > 10 else "No description available"
 
 
 # Singleton instance

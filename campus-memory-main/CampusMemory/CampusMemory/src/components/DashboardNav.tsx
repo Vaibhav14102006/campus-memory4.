@@ -57,14 +57,14 @@ export default function DashboardNav() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-gradient-to-r from-[#0a0f1e] via-[#1a1a2e] to-[#16213e] shadow-lg shadow-cyan-500/20 z-50 border-b border-cyan-500/30">
+    <nav className="fixed top-0 left-0 right-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 shadow-lg z-50 border-b border-gray-700">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 tracking-wider uppercase" style={{textShadow: '0 0 20px rgba(0,229,255,0.5)'}}>
-              🤖 Campus AI
+            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 tracking-wider uppercase">
+              Campus Memory
             </div>
-            <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-lg shadow-cyan-400"></div>
+            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse shadow-lg shadow-blue-400"></div>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -78,22 +78,22 @@ export default function DashboardNav() {
                   href={item.href}
                   className={`relative flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 overflow-hidden group ${
                     isActive
-                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/50 scale-105'
-                      : 'bg-gradient-to-r from-gray-800/80 to-gray-900/80 text-cyan-300 hover:text-cyan-100 hover:shadow-lg hover:shadow-cyan-500/30 border border-cyan-500/20 backdrop-blur-sm hover:scale-105'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/50 scale-105'
+                      : 'bg-gradient-to-r from-gray-800/80 to-gray-900/80 text-blue-300 hover:text-blue-100 hover:shadow-lg hover:shadow-blue-500/30 border border-gray-700 backdrop-blur-sm hover:scale-105'
                   }`}
                   title={item.description}
                 >
-                  {/* Holographic scan effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                  {/* Gradient effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                   
                   <Icon size={18} className={`relative z-10 ${isActive ? 'drop-shadow-lg' : ''}`} />
                   <span className="hidden md:inline font-semibold uppercase tracking-wide text-sm relative z-10">{item.name}</span>
                   
-                  {/* Circuit corner indicator */}
+                  {/* Active indicator */}
                   {isActive && (
                     <>
-                      <div className="absolute top-0 right-0 w-2 h-2 border-r-2 border-t-2 border-cyan-200 opacity-70"></div>
-                      <div className="absolute bottom-0 left-0 w-2 h-2 border-l-2 border-b-2 border-cyan-200 opacity-70"></div>
+                      <div className="absolute top-0 right-0 w-2 h-2 border-r-2 border-t-2 border-blue-200 opacity-70"></div>
+                      <div className="absolute bottom-0 left-0 w-2 h-2 border-l-2 border-b-2 border-blue-200 opacity-70"></div>
                     </>
                   )}
                 </Link>

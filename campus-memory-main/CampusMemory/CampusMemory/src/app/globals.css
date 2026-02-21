@@ -1,58 +1,43 @@
 @import "tailwindcss";
 
 @theme {
-  /* 🤖 ROBOTIC THEME - Cyber Tech Colors */
-  --color-primary: #00E5FF;
-  --color-primary-light: #69F0FF;
-  --color-primary-dark: #00B8D4;
-  --color-cyber-blue: #00E5FF;
-  --color-neon-green: #00FF41;
-  --color-electric-purple: #B026FF;
-  --color-tech-orange: #FF6B00;
-  --color-metallic-silver: #C0C0C0;
-  --color-dark-metal: #1A1A2E;
-  --color-circuit-green: #00FF88;
-  --color-plasma-pink: #FF0080;
-  --color-hologram-blue: #00FFE0;
-
-  --font-heading: "Orbitron", "Rajdhani", "Poppins", sans-serif;
-  --font-body: "Rajdhani", "Inter", sans-serif;
+  --color-primary: #3B82F6;
+  --color-primary-light: #60A5FA;
+  --color-primary-dark: #2563EB;
 }
 
 @layer base {
   :root {
-    /* 🤖 Robotic Light Theme */
-    --background: 210 20% 98%;
-    --foreground: 210 10% 10%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 210 10% 10%;
+    --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 210 10% 10%;
-    --primary-hsl: 187 100% 50%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 187 50% 90%;
-    --secondary-foreground: 187 100% 20%;
-    --muted: 210 20% 95%;
-    --muted-foreground: 210 10% 40%;
-    --accent: 141 100% 50%;
-    --accent-foreground: 0 0% 10%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary-hsl: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 187 30% 85%;
-    --input: 187 30% 85%;
-    --ring: 187 100% 50%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
   }
 
   .dark {
-    /* 🤖 Robotic Dark Theme (Cyber Dark) */
-    --background: 240 20% 8%;
-    --foreground: 187 100% 90%;
-    --card: 240 20% 12%;
-    --card-foreground: 187 100% 90%;
-    --popover: 240 20% 12%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary-hsl: 224 73% 50%;
+    --primary-hsl: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -64,63 +49,33 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224 73% 50%;
+    --ring: 224.3 76.3% 48%;
   }
 }
 
 @layer base {
   * {
-    border-color: var(--color-gray-200, #00E5FF33);
+    border-color: hsl(var(--border));
   }
   body {
-    background: linear-gradient(135deg, #0a0f1e 0%, #1a1a2e 50%, #16213e 100%);
-    color: #00E5FF;
-    font-family: var(--font-body);
-    font-feature-settings: "rlig" 1, "calt" 1;
-    position: relative;
-    overflow-x: hidden;
-  }
-  
-  /* 🤖 Cyber Grid Background */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-      linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-    z-index: 0;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
-/* 🤖 Robotic Cyber Scrollbar */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0f1e;
-  border-left: 1px solid #00E5FF33;
+  background: hsl(var(--background));
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #00E5FF, #00B8D4);
+  background: hsl(var(--primary-hsl));
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #69F0FF, #00E5FF);
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.8);
+  background: hsl(var(--primary-dark));
 }
 
 /* Animated gradient background */
@@ -432,69 +387,6 @@
 
 .glitch-effect:hover {
   animation: glitch 0.3s infinite;
-}
-
-/* 🤖 Robotic Cyber Effects */
-@keyframes cyber-pulse {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(0, 229, 255, 0.5), 0 0 10px rgba(0, 229, 255, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.8), 0 0 30px rgba(0, 229, 255, 0.5);
-  }
-}
-
-@keyframes circuit-glow {
-  0%, 100% {
-    text-shadow: 0 0 5px #00E5FF, 0 0 10px #00E5FF, 0 0 15px #00E5FF;
-  }
-  50% {
-    text-shadow: 0 0 10px #00E5FF, 0 0 20px #00E5FF, 0 0 30px #00E5FF, 0 0 40px #00E5FF;
-  }
-}
-
-@keyframes matrix-rain {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
-}
-
-/* Robotic Card Styles */
-.robot-card {
-  background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
-  border: 1px solid rgba(0, 229, 255, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 229, 255, 0.1);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-.robot-card:hover {
-  border-color: rgba(0, 229, 255, 0.8);
-  box-shadow: 0 8px 30px rgba(0, 229, 255, 0.3);
-  transform: translateY(-2px);
-}
-
-/* Robotic Button Styles */
-.robot-btn {
-  background: linear-gradient(135deg, #00E5FF, #00B8D4);
-  border: 1px solid #00E5FF;
-  color: #0a0f1e;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
-  transition: all 0.3s ease;
-}
-
-.robot-btn:hover {
-  box-shadow: 0 0 25px rgba(0, 229, 255, 0.8);
-  transform: scale(1.05);
-}
-
-/* Neon Text Effects */
-.neon-text {
-  color: #00E5FF;
-  text-shadow: 0 0 5px #00E5FF, 0 0 10px #00E5FF, 0 0 15px #00E5FF;
-  animation: circuit-glow 2s ease-in-out infinite;
 }
 
 /* Spotlight effect */
